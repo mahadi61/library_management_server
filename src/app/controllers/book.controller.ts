@@ -2,10 +2,10 @@ import express, { Request, Response } from "express";
 import { Book } from "../models/books.model";
 export const bookRoutes = express.Router();
 
+// get all books with optional filters, sorting, limiting
 bookRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const { filter, sortBy, sort, limit } = req.query;
-    console.log(filter, sortBy, sort, limit);
 
     const limitValue = parseInt(limit as string);
 
@@ -29,6 +29,69 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// get a book by id
+bookRoutes.get("/:bookId", async (req: Request, res: Response) => {
+  try {
+    const bookId = req.params.bookId;
+
+    const books = await Book.findById(bookId);
+
+    res.status(201).json({
+      success: true,
+      message: "Books retrieved successfully",
+      data: books,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// delete a book by id
+bookRoutes.delete("/:bookId", async (req: Request, res: Response) => {
+  try {
+    const bookId = req.params.bookId;
+
+    let book = await Book.findByIdAndDelete(bookId);
+
+    book = book ? book : { message: "Book not found" };
+
+    res.status(201).json({
+      success: true,
+      message: "Book deleted successfully",
+      data: book,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error,
+    });
+  }
+});
+
+// update a book by id
+bookRoutes.patch("/:bookId", async (req: Request, res: Response) => {
+  try {
+    const bookId = req.params.bookId;
+    const body = req.body;
+    const book = await Book.findByIdAndUpdate(bookId, body, {
+      new: true,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Book created successfully",
+      data: book,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Validation failed",
+      success: false,
+      error: error,
+    });
   }
 });
 
