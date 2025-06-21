@@ -36,4 +36,25 @@ const bookSchema = new Schema<IBook>(
   }
 );
 
-export const Book = model("Book", bookSchema);
+// Static method to handle copy deduction
+bookSchema.statics.borrowCopies = async function (
+  bookId: string,
+  quantity: number
+) {
+  const book = await this.findById(bookId);
+  if (!book) throw new Error("Book not found");
+
+  if (book.copies < quantity) {
+    throw new Error("Not enough copies available");
+  }
+
+  book.copies -= quantity;
+  if (book.copies === 0) {
+    book.available = false;
+  }
+
+  await book.save();
+  return book;
+};
+
+export const Book = model<IBook, any>("Book", bookSchema);

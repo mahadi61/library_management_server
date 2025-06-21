@@ -54,7 +54,7 @@ bookRoutes.delete("/:bookId", async (req: Request, res: Response) => {
   try {
     const bookId = req.params.bookId;
 
-    let book = await Book.findByIdAndDelete(bookId);
+    let book: any = await Book.findByIdAndDelete(bookId);
 
     book = book ? book : { message: "Book not found" };
 
