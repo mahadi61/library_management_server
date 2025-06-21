@@ -54,7 +54,6 @@ borrowRoutes.get("/", async (req: Request, res: Response) => {
 borrowRoutes.post("/", async (req: Request, res: Response) => {
   try {
     const { book, quantity, dueDate } = req.body;
-    console.log(book);
     //Update the book stock
     await Book.borrowCopies(book, quantity);
 

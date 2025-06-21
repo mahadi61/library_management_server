@@ -77,12 +77,16 @@ bookSchema.pre("save", function (next) {
   }
   next();
 });
-bookSchema.pre("findOneAndDelete", function (next) {
-  console.log(
-    "Pre findOneAndDelete hook triggered for book with ID: ",
-    this.getQuery()._id
-  );
-  next();
+
+bookSchema.post("findOneAndUpdate", async function (doc) {
+  if (doc && doc.copies === 0 && doc.available !== false) {
+    doc.available = false;
+    await doc.save();
+  }
+  if (doc && doc.copies > 0 && doc.available !== true) {
+    doc.available = true;
+    await doc.save();
+  }
 });
 
 export const Book = model<IBook, any>("Book", bookSchema);
