@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import app from "./app";
 
 let server: Server;
+
 const DB_User = "libraryDB";
 const DB_Password = "libraryDB";
 
@@ -15,8 +16,9 @@ async function main() {
     );
     // Start the server
     server = app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
+      console.log(`Server is running on port:${PORT}`);
     });
+    console.log(server);
   } catch (error) {
     console.error("Error starting server:", error);
   }
