@@ -24,7 +24,7 @@ A simple and powerful library management system built using **Express**, **TypeS
 
 ```
 git clone https://github.com/mahadi61/library_management_server.git
-cd library-management
+cd library_management_server
 ```
 
 ### 2. Install dependencies
