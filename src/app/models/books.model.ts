@@ -69,4 +69,20 @@ bookSchema.statics.borrowCopies = async function (
   return book;
 };
 
+bookSchema.pre("save", function (next) {
+  if (this.copies === 0) {
+    this.available = false;
+  } else {
+    this.available = true;
+  }
+  next();
+});
+bookSchema.pre("findOneAndDelete", function (next) {
+  console.log(
+    "Pre findOneAndDelete hook triggered for book with ID: ",
+    this.getQuery()._id
+  );
+  next();
+});
+
 export const Book = model<IBook, any>("Book", bookSchema);

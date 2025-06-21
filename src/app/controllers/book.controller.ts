@@ -7,7 +7,7 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const { filter, sortBy, sort, limit } = req.query;
 
-    const limitValue = parseInt(limit as string);
+    const limitValue = parseInt(limit as string) || 10;
 
     const filterObj: any = {};
     if (filter) {
