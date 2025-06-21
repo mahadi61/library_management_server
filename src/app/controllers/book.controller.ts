@@ -22,13 +22,16 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
 
     const books = await Book.find(filterObj).sort(sortObj).limit(limitValue);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Books retrieved successfully",
       data: books,
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      message: "Internal server error",
+      error: error,
+    });
   }
 });
 
@@ -39,13 +42,17 @@ bookRoutes.get("/:bookId", async (req: Request, res: Response) => {
 
     const books = await Book.findById(bookId);
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Books retrieved successfully",
       data: books,
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    const err = error as any;
+    res.status(err.statusCode || 500).json({
+      message: "Internal server error",
+      error: err.message || error,
+    });
   }
 });
 
@@ -56,7 +63,7 @@ bookRoutes.delete("/:bookId", async (req: Request, res: Response) => {
 
     let book: any = await Book.findByIdAndDelete(bookId);
 
-    book = book ? book : { message: "Book not found" };
+    book = book ? book : null;
 
     res.status(201).json({
       success: true,

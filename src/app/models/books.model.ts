@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import { IBook } from "../interfaces/book.interface";
 
 const bookSchema = new Schema<IBook>(
@@ -38,14 +38,26 @@ const bookSchema = new Schema<IBook>(
 
 // Static method to handle copy deduction
 bookSchema.statics.borrowCopies = async function (
-  bookId: string,
+  bookId: Types.ObjectId,
   quantity: number
 ) {
+  if (!Types.ObjectId.isValid(bookId)) {
+    const err: any = new Error("Invalid book ID");
+    err.statusCode = 400;
+    throw err;
+  }
   const book = await this.findById(bookId);
-  if (!book) throw new Error("Book not found");
+  if (!book) {
+    console.log("Book not found");
+    const err: any = new Error("Book not found");
+    err.statusCode = 404;
+    throw err;
+  }
 
   if (book.copies < quantity) {
-    throw new Error("Not enough copies available");
+    const err: any = new Error("Not enough copies available");
+    err.statusCode = 400;
+    throw err;
   }
 
   book.copies -= quantity;
