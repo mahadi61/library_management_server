@@ -7,7 +7,7 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const { filter, sortBy, sort, limit } = req.query;
 
-    const limitValue = parseInt(limit as string) || 10;
+    const limitValue = parseInt(limit as string) || 100;
 
     const filterObj: any = {};
     if (filter) {
@@ -18,7 +18,7 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
     const sortObj: any = {};
     sortObj[sortBy as string] = sortOrder;
 
-    console.log(sortObj, filterObj);
+    // console.log(sortObj, filterObj);
 
     const books = await Book.find(filterObj).sort(sortObj).limit(limitValue);
 
@@ -107,6 +107,7 @@ bookRoutes.post("/", async (req: Request, res: Response) => {
   try {
     const body = req.body;
     const book = await Book.create(body);
+    console.log("", book);
 
     res.status(201).json({
       success: true,
